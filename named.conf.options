@@ -1,0 +1,30 @@
+#sesuiakan dengan network anda
+acl "trusted" {
+     192.168.1.0/24;
+};
+options {
+max-cache-ttl 60; // limit cached record to a 60s TTL
+max-ncache-ttl 60; // limit cache neg. resp. to a 60s TTL
+recursive-clients 2000;
+tcp-clients 200;
+allow-query { any; };
+     allow-recursion { trusted; };
+     allow-query-cache { trusted; };
+directory "/var/cache/bind";
+  #This is just options for RPZs. Add other options as required
+  recursion yes;
+max-cache-size 50%;
+version "ECHO";
+hostname none;
+server-id none;
+  response-policy {
+    zone "trustpositifkominfo" policy nxdomain;
+  } qname-wait-recurse no break-dnssec yes;
+};
+
+zone "trustpositifkominfo" {
+  type slave;
+  file "/var/cache/bind/trustpositifkominfo";
+  #ip address dns master kominfo 
+  masters {;};
+};
